@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Нийгмийн ухааны тест үүсгэгч</title>
+<title>Нийгмийн ухааны тестийн сан</title>
 
 <style>
+
 body {
     font-family: Arial, sans-serif;
     background: #f2f4f7;
@@ -15,7 +16,7 @@ body {
 }
 
 .container {
-    max-width: 900px;
+    max-width: 950px;
     margin: auto;
     background: white;
     padding: 30px;
@@ -29,7 +30,26 @@ h1 {
 .info {
     text-align: center;
     color: #555;
-    margin-bottom: 25px;
+}
+
+.settings {
+    background: #f7f8fa;
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 25px;
+}
+
+label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 7px;
+    font-size: 16px;
 }
 
 button {
@@ -56,8 +76,22 @@ button {
 }
 
 #result {
-    margin-top: 25px;
+    margin-top: 30px;
 }
+
+@media print {
+
+    .settings,
+    #generateButton,
+    #printButton {
+        display: none;
+    }
+
+    body {
+        background: white;
+    }
+}
+
 </style>
 </head>
 
@@ -71,176 +105,388 @@ button {
 Санамсаргүй асуулт сонгон шалгалтын материал үүсгэгч
 </p>
 
+
+<div class="settings">
+
+<label>📘 Анги сонгох</label>
+
+<select id="grade">
+
+<option value="9">9-р анги</option>
+<option value="10">10-р анги</option>
+<option value="11">11-р анги</option>
+<option value="12">12-р анги</option>
+
+</select>
+
+
+<label>📚 Сэдэв сонгох</label>
+
+<select id="topic">
+
+<option value="culture">Соёл</option>
+<option value="society">Нийгэм</option>
+<option value="economy">Эдийн засаг</option>
+<option value="politics">Улс төр</option>
+<option value="law">Эрх зүй</option>
+<option value="history">Түүх</option>
+
+</select>
+
+
+<label>📝 Асуултын тоо</label>
+
+<select id="questionCount">
+
+<option value="5">5 асуулт</option>
+<option value="10">10 асуулт</option>
+<option value="20">20 асуулт</option>
+
+</select>
+
+
 <button id="generateButton">
 🎲 Шалгалт үүсгэх
 </button>
 
+</div>
+
+
 <div id="result"></div>
+
 
 </div>
 
+
 <script>
 
+
 const questions = [
-    {
-        question: "Монгол Улс НҮБ-д хэдэн онд элссэн бэ?",
-        answers: [
-            "1945 он",
-            "1955 он",
-            "1961 он",
-            "1971 он"
-        ]
-    },
 
-    {
-        question: "Соёлын үндсэн бүрэлдэхүүнд аль нь хамаарах вэ?",
-        answers: [
-            "Хэл",
-            "Бэлгэдэл",
-            "Үнэт зүйл",
-            "Дээрх бүгд"
-        ]
-    },
+{
+grade: "10",
+topic: "culture",
 
-    {
-        question: "Нийгэм гэж юу вэ?",
-        answers: [
-            "Зөвхөн хүмүүсийн бөөгнөрөл",
-            "Харилцан үйлдэл бүхий хүмүүсийн тогтолцоо",
-            "Зөвхөн гэр бүл",
-            "Зөвхөн төр"
-        ]
-    },
+question: "Соёл гэж юу вэ?",
 
-    {
-        question: "Инфляци гэж юу вэ?",
-        answers: [
-            "Бараа үйлчилгээний үнийн ерөнхий түвшин өсөх",
-            "Ажилгүйдэл буурах",
-            "Цалин буурах",
-            "Экспорт нэмэгдэх"
-        ]
-    },
+answers: [
+"Хүмүүсийн бүтээсэн материаллаг болон оюуны үнэт зүйлсийн цогц",
+"Зөвхөн урлаг",
+"Зөвхөн хэл",
+"Зөвхөн уламжлал"
+]
 
-    {
-        question: "Монгол Улсын Үндсэн хууль хэдэн онд батлагдсан бэ?",
-        answers: [
-            "1924 он",
-            "1940 он",
-            "1960 он",
-            "1992 он"
-        ]
-    },
+},
 
-    {
-        question: "Нийгмийн давхраажилт гэж юу вэ?",
-        answers: [
-            "Нийгмийн бүлгүүдийн ялгарал",
-            "Зөвхөн насны ялгаа",
-            "Зөвхөн хүйсийн ялгаа",
-            "Зөвхөн хэлний ялгаа"
-        ]
-    },
 
-    {
-        question: "Ардчиллын үндсэн зарчмын нэг аль вэ?",
-        answers: [
-            "Иргэдийн оролцоо",
-            "Нэг хүний эрх мэдэл",
-            "Цэргийн засаглал",
-            "Хаант засаглал"
-        ]
-    },
+{
+grade: "10",
+topic: "culture",
 
-    {
-        question: "Ажилгүйдэл гэж юу вэ?",
-        answers: [
-            "Ажиллах хүсэлгүй байх",
-            "Ажиллах чадвартай, ажиллах хүсэлтэй боловч ажилгүй байх",
-            "Бүх хүн ажилгүй байх",
-            "Сургуульд сурах"
-        ]
-    },
+question: "Соёлыг бүрдүүлэгч үндсэн элементүүдийн нэг аль вэ?",
 
-    {
-        question: "Эдийн засгийн үндсэн нөөцийн нэг аль вэ?",
-        answers: [
-            "Газар",
-            "Зөвхөн мөнгө",
-            "Зөвхөн компьютер",
-            "Зөвхөн үйлдвэр"
-        ]
-    },
+answers: [
+"Бэлгэдэл",
+"Мөнгө",
+"Банк",
+"Татвар"
+]
 
-    {
-        question: "Хүний эрхийн үндсэн шинж аль вэ?",
-        answers: [
-            "Хүн бүрт хамаарна",
-            "Зөвхөн баян хүнд хамаарна",
-            "Зөвхөн төрийн албан хаагчид хамаарна",
-            "Зөвхөн насанд хүрэгчдэд хамаарна"
-        ]
-    }
+},
+
+
+{
+grade: "10",
+topic: "culture",
+
+question: "Хэл соёлд ямар үүрэгтэй вэ?",
+
+answers: [
+"Мэдээлэл, утга санааг дамжуулна",
+"Зөвхөн бичиг баримт хадгална",
+"Зөвхөн худалдаанд хэрэглэнэ",
+"Ямар ч үүрэггүй"
+]
+
+},
+
+
+{
+grade: "10",
+topic: "society",
+
+question: "Нийгэм гэж юу вэ?",
+
+answers: [
+"Хүмүүсийн харилцан үйлдэл бүхий тогтолцоо",
+"Зөвхөн гэр бүл",
+"Зөвхөн төр",
+"Зөвхөн сургууль"
+]
+
+},
+
+
+{
+grade: "10",
+topic: "society",
+
+question: "Нийгмийн давхраажилт гэж юу вэ?",
+
+answers: [
+"Нийгмийн бүлгүүдийн байр суурь, нөөцийн ялгарал",
+"Зөвхөн насны ялгаа",
+"Зөвхөн хэлний ялгаа",
+"Зөвхөн газар нутгийн ялгаа"
+]
+
+},
+
+
+{
+grade: "11",
+topic: "economy",
+
+question: "Инфляци гэж юу вэ?",
+
+answers: [
+"Бараа үйлчилгээний үнийн ерөнхий түвшин өсөх",
+"Цалин заавал буурах",
+"Ажилгүйдэл бүрэн арилгах",
+"Экспорт буурах"
+]
+
+},
+
+
+{
+grade: "11",
+topic: "economy",
+
+question: "Эдийн засгийн үндсэн нөөцийн нэг аль вэ?",
+
+answers: [
+"Газар",
+"Зөвхөн мөнгө",
+"Зөвхөн компьютер",
+"Зөвхөн банк"
+]
+
+},
+
+
+{
+grade: "11",
+topic: "economy",
+
+question: "Ажилгүйдэл гэж юу вэ?",
+
+answers: [
+"Ажиллах чадвартай, ажиллах хүсэлтэй боловч ажилгүй байх",
+"Сургуульд сурах",
+"Ажиллах хүсэлгүй байх",
+"Бүх хүн ажилгүй байх"
+]
+
+},
+
+
+{
+grade: "11",
+topic: "politics",
+
+question: "Ардчиллын үндсэн зарчмын нэг аль вэ?",
+
+answers: [
+"Иргэдийн оролцоо",
+"Нэг хүний эрх мэдэл",
+"Цэргийн засаглал",
+"Хаант засаглал"
+]
+
+},
+
+
+{
+grade: "12",
+topic: "law",
+
+question: "Хүний эрхийн үндсэн шинж аль вэ?",
+
+answers: [
+"Хүн бүрт хамаарна",
+"Зөвхөн баян хүнд хамаарна",
+"Зөвхөн төрийн албан хаагчид хамаарна",
+"Зөвхөн насанд хүрэгчдэд хамаарна"
+]
+
+},
+
+
+{
+grade: "10",
+topic: "history",
+
+question: "Монгол Улс НҮБ-д хэдэн онд элссэн бэ?",
+
+answers: [
+"1945 он",
+"1955 он",
+"1961 он",
+"1971 он"
+]
+
+},
+
+
+{
+grade: "10",
+topic: "history",
+
+question: "Монгол Улсын Үндсэн хууль хэдэн онд батлагдсан бэ?",
+
+answers: [
+"1924 он",
+"1940 он",
+"1960 он",
+"1992 он"
+]
+
+}
+
 ];
 
 
 function shuffle(array) {
 
-    let newArray = array.slice();
+let newArray = array.slice();
 
-    for (let i = newArray.length - 1; i > 0; i--) {
+for (let i = newArray.length - 1; i > 0; i--) {
 
-        let j = Math.floor(Math.random() * (i + 1));
+let j = Math.floor(Math.random() * (i + 1));
 
-        let temp = newArray[i];
+let temp = newArray[i];
 
-        newArray[i] = newArray[j];
+newArray[i] = newArray[j];
 
-        newArray[j] = temp;
-    }
+newArray[j] = temp;
 
-    return newArray;
+}
+
+return newArray;
+
 }
 
 
 function generateTest() {
 
-    let selected = shuffle(questions).slice(0, 5);
 
-    let html = "<h2>📝 Шалгалтын материал</h2>";
+let grade =
+document.getElementById("grade").value;
 
-    selected.forEach(function(q, index) {
 
-        html += "<div class='question'>";
+let topic =
+document.getElementById("topic").value;
 
-        html += "<h3>";
-        html += (index + 1) + ". " + q.question;
-        html += "</h3>";
 
-        q.answers.forEach(function(answer, i) {
+let count =
+Number(document.getElementById("questionCount").value);
 
-            html += "<div class='answer'>";
-            html += String.fromCharCode(65 + i) + ". " + answer;
-            html += "</div>";
 
-        });
+let filtered =
+questions.filter(function(q) {
 
-        html += "</div>";
+return q.grade === grade &&
+       q.topic === topic;
 
-    });
+});
 
-    html += "<button onclick='window.print()'>";
-    html += "🖨️ Хэвлэх";
-    html += "</button>";
 
-    document.getElementById("result").innerHTML = html;
+if (filtered.length === 0) {
+
+document.getElementById("result").innerHTML =
+
+"<h2>⚠️ Энэ ангид сонгосон сэдвийн асуулт одоогоор алга.</h2>" +
+
+"<p>Өөр анги эсвэл өөр сэдэв сонгоно уу.</p>";
+
+return;
+
 }
 
 
-document.getElementById("generateButton").addEventListener(
-    "click",
-    generateTest
+let selected =
+shuffle(filtered).slice(
+0,
+Math.min(count, filtered.length)
 );
+
+
+let html =
+"<h2>📝 Шалгалтын материал</h2>";
+
+
+selected.forEach(function(q, index) {
+
+
+html +=
+"<div class='question'>";
+
+
+html +=
+"<h3>" +
+(index + 1) +
+". " +
+q.question +
+"</h3>";
+
+
+q.answers.forEach(function(answer, i) {
+
+
+html +=
+"<div class='answer'>" +
+
+String.fromCharCode(65 + i) +
+
+". " +
+
+answer +
+
+"</div>";
+
+
+});
+
+
+html +=
+"</div>";
+
+
+});
+
+
+html +=
+
+"<button id='printButton' onclick='window.print()'>" +
+
+"🖨️ Хэвлэх" +
+
+"</button>";
+
+
+document.getElementById("result").innerHTML =
+html;
+
+}
+
+
+document.getElementById("generateButton")
+.addEventListener(
+"click",
+generateTest
+);
+
 
 </script>
 
