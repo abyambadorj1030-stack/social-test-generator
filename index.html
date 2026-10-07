@@ -625,6 +625,20 @@ const supabaseClient = supabase.createClient(
     SUPABASE_URL,
     SUPABASE_KEY
 );
+    async function testSupabase() {
+    const { data, error } = await supabaseClient
+        .from("questions")
+        .select("*");
+
+    if (error) {
+        console.error("Supabase алдаа:", error);
+        alert("❌ Database холболтын алдаа гарлаа.");
+        return;
+    }
+
+    console.log("Database-ийн асуултууд:", data);
+    alert("✅ Database-тэй амжилттай холбогдлоо!");
+}
 </script>
     const SUPABASE_URL = "https://eejwmzgcwmfyasbctilt.supabase.co/rest/v1/";
     const SUPABASE_KEY = "sb_publishable_J8Qgh7mZeHRLW0yyuEbWNg_MK0qr1rX";
