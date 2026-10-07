@@ -615,5 +615,18 @@ function addQuestion() {
     document.getElementById("answerD").value = "";
 }
 </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "ЭНД API URL-ЭЭ ОРУУЛНА";
+const SUPABASE_KEY = "ЭНД PUBLISHABLE KEY-ЭЭ ОРУУЛНА";
+
+const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+</script>
+    const SUPABASE_URL = "https://eejwmzgcwmfyasbctilt.supabase.co/rest/v1/";
+    const SUPABASE_KEY = "sb_publishable_J8Qgh7mZeHRLW0yyuEbWNg_MK0qr1rX";
 </body>
 </html>
