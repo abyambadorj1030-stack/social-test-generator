@@ -7,7 +7,6 @@
 <title>Нийгмийн ухааны тестийн сан</title>
 
 <style>
-
 body {
     font-family: Arial, sans-serif;
     background: #f2f4f7;
@@ -45,11 +44,13 @@ label {
     font-weight: bold;
 }
 
-select {
+select,
+input {
     width: 100%;
     padding: 12px;
     margin-top: 7px;
     font-size: 16px;
+    box-sizing: border-box;
 }
 
 button {
@@ -79,19 +80,31 @@ button {
     margin-top: 30px;
 }
 
-@media print {
+#adminPanel {
+    display: none;
+    margin-top: 30px;
+    padding: 25px;
+    background: #f1f5f9;
+    border-radius: 15px;
+}
 
+.message {
+    text-align: center;
+    font-weight: bold;
+}
+
+@media print {
     .settings,
-    #generateButton,
-    #printButton {
-        display: none;
+    #adminLoginButton,
+    #printButton,
+    #adminPanel {
+        display: none !important;
     }
 
     body {
         background: white;
     }
 }
-
 </style>
 </head>
 
@@ -100,50 +113,44 @@ button {
 <div class="container">
 
 <h1>📚 Нийгмийн ухааны тестийн сан</h1>
-<button onclick="adminLogin()">🔐 Админ нэвтрэх</button>
+
+<button id="adminLoginButton" onclick="adminLogin()">
+🔐 Админ нэвтрэх
+</button>
+
 <p class="info">
 Санамсаргүй асуулт сонгон шалгалтын материал үүсгэгч
 </p>
-
 
 <div class="settings">
 
 <label>📘 Анги сонгох</label>
 
 <select id="grade">
-
-<option value="9">9-р анги</option>
-<option value="10">10-р анги</option>
-<option value="11">11-р анги</option>
-<option value="12">12-р анги</option>
-
+    <option value="9">9-р анги</option>
+    <option value="10">10-р анги</option>
+    <option value="11">11-р анги</option>
+    <option value="12">12-р анги</option>
 </select>
-
 
 <label>📚 Сэдэв сонгох</label>
 
 <select id="topic">
-
-<option value="culture">Соёл</option>
-<option value="society">Нийгэм</option>
-<option value="economy">Эдийн засаг</option>
-<option value="politics">Улс төр</option>
-<option value="law">Эрх зүй</option>
-<option value="history">Түүх</option>
-
+    <option value="culture">Соёл</option>
+    <option value="society">Нийгэм</option>
+    <option value="economy">Эдийн засаг</option>
+    <option value="politics">Улс төр</option>
+    <option value="law">Эрх зүй</option>
+    <option value="history">Түүх</option>
 </select>
-
 
 <label>📝 Асуултын тоо</label>
 
 <select id="questionCount">
-
-<option value="5">5 асуулт</option>
-<option value="10">10 асуулт</option>
-<option value="20">20 асуулт</option>
-
+    <option value="5">5 асуулт</option>
+    <option value="10">10 асуулт</option>
+    <option value="20">20 асуулт</option>
 </select>
-
 
 <button id="generateButton">
 🎲 Шалгалт үүсгэх
@@ -151,497 +158,444 @@ button {
 
 </div>
 
-
 <div id="result"></div>
 
+<div id="adminPanel">
+
+<h2>🔐 Админ самбар</h2>
+
+<p>Эндээс тестийн сангаа удирдана.</p>
+
+<hr>
+
+<h3>➕ Шинэ асуулт нэмэх</h3>
+
+<label>Анги</label>
+
+<select id="adminGrade">
+    <option value="9">9-р анги</option>
+    <option value="10">10-р анги</option>
+    <option value="11">11-р анги</option>
+    <option value="12">12-р анги</option>
+</select>
+
+<label>Сэдэв</label>
+
+<select id="adminTopic">
+    <option value="culture">Соёл</option>
+    <option value="society">Нийгэм</option>
+    <option value="economy">Эдийн засаг</option>
+    <option value="politics">Улс төр</option>
+    <option value="law">Эрх зүй</option>
+    <option value="history">Түүх</option>
+</select>
+
+<label>Асуулт</label>
+<input id="adminQuestion" type="text">
+
+<label>A хариулт</label>
+<input id="answerA" type="text">
+
+<label>B хариулт</label>
+<input id="answerB" type="text">
+
+<label>C хариулт</label>
+<input id="answerC" type="text">
+
+<label>D хариулт</label>
+<input id="answerD" type="text">
+
+<label>Зөв хариулт</label>
+
+<select id="correctAnswer">
+    <option value="A">A</option>
+    <option value="B">B</option>
+    <option value="C">C</option>
+    <option value="D">D</option>
+</select>
+
+<button onclick="addQuestion()">
+💾 Асуулт хадгалах
+</button>
+
+<p id="adminMessage" class="message"></p>
 
 </div>
 
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 
+/* SUPABASE */
 
-const questions = [
+const SUPABASE_URL =
+"https://eejwmzgcwmfyasbctilt.supabase.co/rest/v1/;
 
-{
-grade: "10",
-topic: "culture",
+const SUPABASE_KEY =
+sb_publishable_J8Qgh7mZeHRLW0yyuEbWNg_MK0qr1rX;
 
-question: "Соёл гэж юу вэ?",
-
-answers: [
-"Хүмүүсийн бүтээсэн материаллаг болон оюуны үнэт зүйлсийн цогц",
-"Зөвхөн урлаг",
-"Зөвхөн хэл",
-"Зөвхөн уламжлал"
-]
-
-},
+const supabaseClient =
+supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
 
 
-{
-grade: "10",
-topic: "culture",
+/* АСУУЛТЫН САН */
 
-question: "Соёлыг бүрдүүлэгч үндсэн элементүүдийн нэг аль вэ?",
-
-answers: [
-"Бэлгэдэл",
-"Мөнгө",
-"Банк",
-"Татвар"
-]
-
-},
+let questions = [];
 
 
-{
-grade: "10",
-topic: "culture",
+/* DATABASE-ААС УНШИХ */
 
-question: "Хэл соёлд ямар үүрэгтэй вэ?",
+async function loadQuestions() {
 
-answers: [
-"Мэдээлэл, утга санааг дамжуулна",
-"Зөвхөн бичиг баримт хадгална",
-"Зөвхөн худалдаанд хэрэглэнэ",
-"Ямар ч үүрэггүй"
-]
+    const { data, error } =
+        await supabaseClient
+        .from("questions")
+        .select("*");
 
-},
+    if (error) {
 
+        console.error(
+            "Supabase алдаа:",
+            error
+        );
 
-{
-grade: "10",
-topic: "society",
+        alert(
+            "❌ Database-ээс асуулт уншихад алдаа гарлаа."
+        );
 
-question: "Нийгэм гэж юу вэ?",
+        return;
+    }
 
-answers: [
-"Хүмүүсийн харилцан үйлдэл бүхий тогтолцоо",
-"Зөвхөн гэр бүл",
-"Зөвхөн төр",
-"Зөвхөн сургууль"
-]
+    questions = data.map(function(q) {
 
-},
+        return {
+            id: q.id,
+            grade: q.grade,
+            topic: q.topic,
+            question: q.question,
 
+            answers: [
+                q.answer_a,
+                q.answer_b,
+                q.answer_c,
+                q.answer_d
+            ],
 
-{
-grade: "10",
-topic: "society",
+            correct: q.correct_answer
+        };
 
-question: "Нийгмийн давхраажилт гэж юу вэ?",
+    });
 
-answers: [
-"Нийгмийн бүлгүүдийн байр суурь, нөөцийн ялгарал",
-"Зөвхөн насны ялгаа",
-"Зөвхөн хэлний ялгаа",
-"Зөвхөн газар нутгийн ялгаа"
-]
-
-},
-
-
-{
-grade: "11",
-topic: "economy",
-
-question: "Инфляци гэж юу вэ?",
-
-answers: [
-"Бараа үйлчилгээний үнийн ерөнхий түвшин өсөх",
-"Цалин заавал буурах",
-"Ажилгүйдэл бүрэн арилгах",
-"Экспорт буурах"
-]
-
-},
-
-
-{
-grade: "11",
-topic: "economy",
-
-question: "Эдийн засгийн үндсэн нөөцийн нэг аль вэ?",
-
-answers: [
-"Газар",
-"Зөвхөн мөнгө",
-"Зөвхөн компьютер",
-"Зөвхөн банк"
-]
-
-},
-
-
-{
-grade: "11",
-topic: "economy",
-
-question: "Ажилгүйдэл гэж юу вэ?",
-
-answers: [
-"Ажиллах чадвартай, ажиллах хүсэлтэй боловч ажилгүй байх",
-"Сургуульд сурах",
-"Ажиллах хүсэлгүй байх",
-"Бүх хүн ажилгүй байх"
-]
-
-},
-
-
-{
-grade: "11",
-topic: "politics",
-
-question: "Ардчиллын үндсэн зарчмын нэг аль вэ?",
-
-answers: [
-"Иргэдийн оролцоо",
-"Нэг хүний эрх мэдэл",
-"Цэргийн засаглал",
-"Хаант засаглал"
-]
-
-},
-
-
-{
-grade: "12",
-topic: "law",
-
-question: "Хүний эрхийн үндсэн шинж аль вэ?",
-
-answers: [
-"Хүн бүрт хамаарна",
-"Зөвхөн баян хүнд хамаарна",
-"Зөвхөн төрийн албан хаагчид хамаарна",
-"Зөвхөн насанд хүрэгчдэд хамаарна"
-]
-
-},
-
-
-{
-grade: "10",
-topic: "history",
-
-question: "Монгол Улс НҮБ-д хэдэн онд элссэн бэ?",
-
-answers: [
-"1945 он",
-"1955 он",
-"1961 он",
-"1971 он"
-]
-
-},
-
-
-{
-grade: "10",
-topic: "history",
-
-question: "Монгол Улсын Үндсэн хууль хэдэн онд батлагдсан бэ?",
-
-answers: [
-"1924 он",
-"1940 он",
-"1960 он",
-"1992 он"
-]
-
+    console.log(
+        "Database-ийн асуултын тоо:",
+        questions.length
+    );
 }
 
-];
 
+/* RANDOM */
 
 function shuffle(array) {
 
-let newArray = array.slice();
+    let newArray =
+        array.slice();
 
-for (let i = newArray.length - 1; i > 0; i--) {
+    for (
+        let i = newArray.length - 1;
+        i > 0;
+        i--
+    ) {
 
-let j = Math.floor(Math.random() * (i + 1));
+        let j =
+            Math.floor(
+                Math.random() *
+                (i + 1)
+            );
 
-let temp = newArray[i];
+        let temp =
+            newArray[i];
 
-newArray[i] = newArray[j];
+        newArray[i] =
+            newArray[j];
 
-newArray[j] = temp;
+        newArray[j] =
+            temp;
+    }
 
+    return newArray;
 }
 
-return newArray;
 
-}
-
+/* ШАЛГАЛТ ҮҮСГЭХ */
 
 function generateTest() {
 
+    let grade =
+        document.getElementById(
+            "grade"
+        ).value;
 
-let grade =
-document.getElementById("grade").value;
+    let topic =
+        document.getElementById(
+            "topic"
+        ).value;
 
+    let count =
+        Number(
+            document.getElementById(
+                "questionCount"
+            ).value
+        );
 
-let topic =
-document.getElementById("topic").value;
+    let filtered =
+        questions.filter(function(q) {
 
+            return (
+                q.grade === grade &&
+                q.topic === topic
+            );
 
-let count =
-Number(document.getElementById("questionCount").value);
+        });
 
+    if (filtered.length === 0) {
 
-let filtered =
-questions.filter(function(q) {
+        document.getElementById(
+            "result"
+        ).innerHTML =
 
-return q.grade === grade &&
-       q.topic === topic;
+        "<h2>⚠️ Асуулт олдсонгүй.</h2>" +
 
-});
+        "<p>" +
+        "Сонгосон анги болон сэдвийн database-д асуулт алга." +
+        "</p>";
 
+        return;
+    }
 
-if (filtered.length === 0) {
+    let selected =
+        shuffle(filtered).slice(
+            0,
+            Math.min(
+                count,
+                filtered.length
+            )
+        );
 
-document.getElementById("result").innerHTML =
+    let html =
+        "<h2>📝 Шалгалтын материал</h2>";
 
-"<h2>⚠️ Энэ ангид сонгосон сэдвийн асуулт одоогоор алга.</h2>" +
+    selected.forEach(
+        function(q, index) {
 
-"<p>Өөр анги эсвэл өөр сэдэв сонгоно уу.</p>";
+            html +=
+                "<div class='question'>";
 
-return;
+            html +=
+                "<h3>" +
+                (index + 1) +
+                ". " +
+                q.question +
+                "</h3>";
 
+            q.answers.forEach(
+                function(answer, i) {
+
+                    html +=
+                    "<div class='answer'>" +
+                    String.fromCharCode(65 + i) +
+                    ". " +
+                    answer +
+                    "</div>";
+
+                }
+            );
+
+            html +=
+                "</div>";
+        }
+    );
+
+    html +=
+    "<button id='printButton' onclick='window.print()'>" +
+    "🖨️ Хэвлэх" +
+    "</button>";
+
+    document.getElementById(
+        "result"
+    ).innerHTML = html;
 }
 
 
-let selected =
-shuffle(filtered).slice(
-0,
-Math.min(count, filtered.length)
-);
+/* АДМИН НЭВТРЭЛТ */
 
-
-let html =
-"<h2>📝 Шалгалтын материал</h2>";
-
-
-selected.forEach(function(q, index) {
-
-
-html +=
-"<div class='question'>";
-
-
-html +=
-"<h3>" +
-(index + 1) +
-". " +
-q.question +
-"</h3>";
-
-
-q.answers.forEach(function(answer, i) {
-
-
-html +=
-"<div class='answer'>" +
-
-String.fromCharCode(65 + i) +
-
-". " +
-
-answer +
-
-"</div>";
-
-
-});
-
-
-html +=
-"</div>";
-
-
-});
-
-
-html +=
-
-"<button id='printButton' onclick='window.print()'>" +
-
-"🖨️ Хэвлэх" +
-
-"</button>";
-
-
-document.getElementById("result").innerHTML =
-html;
-
-}
-
-
-document.getElementById("generateButton")
-.addEventListener(
-"click",
-generateTest
-);
-
-
-</script>
-<button onclick="adminLogin()">🔐 Админ нэвтрэх</button>
-
-<script>
 function adminLogin() {
 
-    let password = prompt("🔐 Админы нууц үгээ оруулна уу:");
+    let password =
+        prompt(
+            "🔐 Админы нууц үгээ оруулна уу:"
+        );
 
     if (password === "1234") {
 
-        document.getElementById("adminPanel").style.display = "block";
+        document.getElementById(
+            "adminPanel"
+        ).style.display =
+            "block";
 
-        alert("✅ Админ хэсэгт амжилттай нэвтэрлээ!");
+        alert(
+            "✅ Админ хэсэгт амжилттай нэвтэрлээ!"
+        );
 
-        document.getElementById("adminPanel").scrollIntoView({
+        document.getElementById(
+            "adminPanel"
+        ).scrollIntoView({
             behavior: "smooth"
         });
 
     } else {
 
-        alert("❌ Нууц үг буруу байна.");
-
+        alert(
+            "❌ Нууц үг буруу байна."
+        );
     }
 }
-</script>
-    <div id="adminPanel" style="display:none; margin-top:30px; padding:25px; background:#f1f5f9; border-radius:15px;">
 
-    <h2>🔐 Админ самбар</h2>
 
-    <p>Эндээс тестийн сангаа удирдана.</p>
+/* DATABASE-Д АСУУЛТ НЭМЭХ */
 
-    <hr>
+async function addQuestion() {
 
-    <h3>➕ Шинэ асуулт нэмэх</h3>
+    let grade =
+        document.getElementById(
+            "adminGrade"
+        ).value;
 
-    <label>Анги</label>
-    <select id="adminGrade">
-        <option value="9">9-р анги</option>
-        <option value="10">10-р анги</option>
-        <option value="11">11-р анги</option>
-        <option value="12">12-р анги</option>
-    </select>
+    let topic =
+        document.getElementById(
+            "adminTopic"
+        ).value;
 
-    <label>Сэдэв</label>
-    <select id="adminTopic">
-        <option value="culture">Соёл</option>
-        <option value="society">Нийгэм</option>
-        <option value="economy">Эдийн засаг</option>
-        <option value="politics">Улс төр</option>
-        <option value="law">Эрх зүй</option>
-        <option value="history">Түүх</option>
-    </select>
+    let question =
+        document.getElementById(
+            "adminQuestion"
+        ).value;
 
-    <label>Асуулт</label>
-    <input id="adminQuestion" type="text" style="width:100%; padding:10px; margin:8px 0;">
+    let answerA =
+        document.getElementById(
+            "answerA"
+        ).value;
 
-    <label>A хариулт</label>
-    <input id="answerA" type="text" style="width:100%; padding:10px; margin:8px 0;">
+    let answerB =
+        document.getElementById(
+            "answerB"
+        ).value;
 
-    <label>B хариулт</label>
-    <input id="answerB" type="text" style="width:100%; padding:10px; margin:8px 0;">
+    let answerC =
+        document.getElementById(
+            "answerC"
+        ).value;
 
-    <label>C хариулт</label>
-    <input id="answerC" type="text" style="width:100%; padding:10px; margin:8px 0;">
+    let answerD =
+        document.getElementById(
+            "answerD"
+        ).value;
 
-    <label>D хариулт</label>
-    <input id="answerD" type="text" style="width:100%; padding:10px; margin:8px 0;">
-
-    <label>Зөв хариулт</label>
-    <select id="correctAnswer">
-        <option value="0">A</option>
-        <option value="1">B</option>
-        <option value="2">C</option>
-        <option value="3">D</option>
-    </select>
-
-    <button onclick="addQuestion()">💾 Асуулт хадгалах</button>
-
-    <p id="adminMessage"></p>
-
-</div>
-    <script>
-function addQuestion() {
-
-    let grade = document.getElementById("adminGrade").value;
-    let topic = document.getElementById("adminTopic").value;
-    let question = document.getElementById("adminQuestion").value;
-
-    let answers = [
-        document.getElementById("answerA").value,
-        document.getElementById("answerB").value,
-        document.getElementById("answerC").value,
-        document.getElementById("answerD").value
-    ];
-
-    let correct = Number(
-        document.getElementById("correctAnswer").value
-    );
+    let correct =
+        document.getElementById(
+            "correctAnswer"
+        ).value;
 
     if (
         question.trim() === "" ||
-        answers.some(function(a) {
-            return a.trim() === "";
-        })
+        answerA.trim() === "" ||
+        answerB.trim() === "" ||
+        answerC.trim() === "" ||
+        answerD.trim() === ""
     ) {
-        alert("⚠️ Асуулт болон бүх хариултыг бөглөнө үү.");
+
+        alert(
+            "⚠️ Асуулт болон бүх хариултыг бөглөнө үү."
+        );
+
         return;
     }
 
-    questions.push({
-        grade: grade,
-        topic: topic,
-        question: question,
-        answers: answers,
-        correct: correct
-    });
-
-    document.getElementById("adminMessage").innerHTML =
-        "✅ Асуулт амжилттай нэмэгдлээ!";
-
-    document.getElementById("adminQuestion").value = "";
-    document.getElementById("answerA").value = "";
-    document.getElementById("answerB").value = "";
-    document.getElementById("answerC").value = "";
-    document.getElementById("answerD").value = "";
-}
-</script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-const SUPABASE_URL = "ЭНД API URL-ЭЭ ОРУУЛНА";
-const SUPABASE_KEY = "ЭНД PUBLISHABLE KEY-ЭЭ ОРУУЛНА";
-
-const supabaseClient = supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-);
-    async function testSupabase() {
-    const { data, error } = await supabaseClient
+    const { data, error } =
+        await supabaseClient
         .from("questions")
-        .select("*");
+        .insert({
+
+            grade: grade,
+            topic: topic,
+            question: question,
+            answer_a: answerA,
+            answer_b: answerB,
+            answer_c: answerC,
+            answer_d: answerD,
+            correct_answer: correct
+
+        })
+        .select();
 
     if (error) {
-        console.error("Supabase алдаа:", error);
-        alert("❌ Database холболтын алдаа гарлаа.");
+
+        console.error(
+            "Insert error:",
+            error
+        );
+
+        document.getElementById(
+            "adminMessage"
+        ).innerHTML =
+        "❌ Database-д хадгалж чадсангүй.";
+
         return;
     }
 
-    console.log("Database-ийн асуултууд:", data);
-    alert("✅ Database-тэй амжилттай холбогдлоо!");
+    document.getElementById(
+        "adminMessage"
+    ).innerHTML =
+    "✅ Асуулт database-д амжилттай хадгалагдлаа!";
+
+    document.getElementById(
+        "adminQuestion"
+    ).value = "";
+
+    document.getElementById(
+        "answerA"
+    ).value = "";
+
+    document.getElementById(
+        "answerB"
+    ).value = "";
+
+    document.getElementById(
+        "answerC"
+    ).value = "";
+
+    document.getElementById(
+        "answerD"
+    ).value = "";
+
+    await loadQuestions();
 }
-    testSupabase();
+
+
+/* ЭХЛЭХ */
+
+document
+.getElementById("generateButton")
+.addEventListener(
+    "click",
+    generateTest
+);
+
+loadQuestions();
 </script>
-    const SUPABASE_URL = "https://eejwmzgcwmfyasbctilt.supabase.co/rest/v1/";
-    const SUPABASE_KEY = "sb_publishable_J8Qgh7mZeHRLW0yyuEbWNg_MK0qr1rX";
 </body>
 </html>
