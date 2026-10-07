@@ -493,13 +493,126 @@ generateTest
 
 <script>
 function adminLogin() {
+
     let password = prompt("🔐 Админы нууц үгээ оруулна уу:");
 
     if (password === "1234") {
-        alert("✅ Админ хэсэгт нэвтэрлээ!");
+
+        document.getElementById("adminPanel").style.display = "block";
+
+        alert("✅ Админ хэсэгт амжилттай нэвтэрлээ!");
+
+        document.getElementById("adminPanel").scrollIntoView({
+            behavior: "smooth"
+        });
+
     } else {
+
         alert("❌ Нууц үг буруу байна.");
+
     }
+}
+</script>
+    <div id="adminPanel" style="display:none; margin-top:30px; padding:25px; background:#f1f5f9; border-radius:15px;">
+
+    <h2>🔐 Админ самбар</h2>
+
+    <p>Эндээс тестийн сангаа удирдана.</p>
+
+    <hr>
+
+    <h3>➕ Шинэ асуулт нэмэх</h3>
+
+    <label>Анги</label>
+    <select id="adminGrade">
+        <option value="9">9-р анги</option>
+        <option value="10">10-р анги</option>
+        <option value="11">11-р анги</option>
+        <option value="12">12-р анги</option>
+    </select>
+
+    <label>Сэдэв</label>
+    <select id="adminTopic">
+        <option value="culture">Соёл</option>
+        <option value="society">Нийгэм</option>
+        <option value="economy">Эдийн засаг</option>
+        <option value="politics">Улс төр</option>
+        <option value="law">Эрх зүй</option>
+        <option value="history">Түүх</option>
+    </select>
+
+    <label>Асуулт</label>
+    <input id="adminQuestion" type="text" style="width:100%; padding:10px; margin:8px 0;">
+
+    <label>A хариулт</label>
+    <input id="answerA" type="text" style="width:100%; padding:10px; margin:8px 0;">
+
+    <label>B хариулт</label>
+    <input id="answerB" type="text" style="width:100%; padding:10px; margin:8px 0;">
+
+    <label>C хариулт</label>
+    <input id="answerC" type="text" style="width:100%; padding:10px; margin:8px 0;">
+
+    <label>D хариулт</label>
+    <input id="answerD" type="text" style="width:100%; padding:10px; margin:8px 0;">
+
+    <label>Зөв хариулт</label>
+    <select id="correctAnswer">
+        <option value="0">A</option>
+        <option value="1">B</option>
+        <option value="2">C</option>
+        <option value="3">D</option>
+    </select>
+
+    <button onclick="addQuestion()">💾 Асуулт хадгалах</button>
+
+    <p id="adminMessage"></p>
+
+</div>
+    <script>
+function addQuestion() {
+
+    let grade = document.getElementById("adminGrade").value;
+    let topic = document.getElementById("adminTopic").value;
+    let question = document.getElementById("adminQuestion").value;
+
+    let answers = [
+        document.getElementById("answerA").value,
+        document.getElementById("answerB").value,
+        document.getElementById("answerC").value,
+        document.getElementById("answerD").value
+    ];
+
+    let correct = Number(
+        document.getElementById("correctAnswer").value
+    );
+
+    if (
+        question.trim() === "" ||
+        answers.some(function(a) {
+            return a.trim() === "";
+        })
+    ) {
+        alert("⚠️ Асуулт болон бүх хариултыг бөглөнө үү.");
+        return;
+    }
+
+    questions.push({
+        grade: grade,
+        topic: topic,
+        question: question,
+        answers: answers,
+        correct: correct
+    });
+
+    document.getElementById("adminMessage").innerHTML =
+        "✅ Асуулт амжилттай нэмэгдлээ!";
+
+    document.getElementById("adminQuestion").value = "";
+    document.getElementById("answerA").value = "";
+    document.getElementById("answerB").value = "";
+    document.getElementById("answerC").value = "";
+    document.getElementById("answerD").value = "";
 }
 </script>
 </body>
