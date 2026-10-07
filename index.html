@@ -264,8 +264,7 @@ async function loadQuestions() {
             error
         );
 
-        alert(
-            "❌ Database-ээс асуулт уншихад алдаа гарлаа."
+           alert("❌ Supabase алдаа: " + error.message);
         );
 
         return;
