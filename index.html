@@ -231,10 +231,10 @@ button {
 /* SUPABASE */
 
 const SUPABASE_URL =
-"https://eejwmzgcwmfyasbctilt.supabase.co/rest/v1/;
+"https://eejwmzgcwmfyasbctilt.supabase.co";
 
 const SUPABASE_KEY =
-sb_publishable_J8Qgh7mZeHRLW0yyuEbWNg_MK0qr1rX;
+"sb_publishable_J8Qgh7mZeHRLW0yyuEbWNg_MK0qr1rX";
 
 const supabaseClient =
 supabase.createClient(
@@ -264,8 +264,7 @@ async function loadQuestions() {
             error
         );
 
-        alert("❌ Supabase алдаа:\n" + JSON.stringify(error);
-        );
+       alert("❌ Supabase алдаа:\n" + JSON.stringify(error));
 
         return;
     }
@@ -355,8 +354,8 @@ function generateTest() {
         questions.filter(function(q) {
 
             return (
-                q.grade === grade &&
-                q.topic === topic
+             String(q.grade) === String(grade) &&
+q.topic === topic
             );
 
         });
