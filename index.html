@@ -550,7 +550,7 @@ async function addQuestion() {
         document.getElementById(
             "adminMessage"
         ).innerHTML =
-        "❌ Database-д хадгалж чадсангүй.";
+        "❌ Database алдаа: " + error.message;
 
         return;
     }
