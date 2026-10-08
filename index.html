@@ -268,7 +268,8 @@ async function loadQuestions() {
 
         return;
     }
-
+console.log("Supabase өгөгдөл:", data);
+console.table(data);
     questions = data.map(function(q) {
 
         return {
